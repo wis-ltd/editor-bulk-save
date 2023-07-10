@@ -1,15 +1,12 @@
 <?php
 /**
- * Plugin Name:       Convert to Blocks
+ * Plugin Name:       Editor bulk save
  * Plugin URI:        https://github.com/10up/convert-to-blocks
- * Description:       Convert classic editor posts to blocks on the fly.
- * Version:           1.2.0
+ * Description:       Allows to bulk save the content of gutenberg editor.
+ * Version:           0.0.1
  * Requires at least: 6.1
  * Requires PHP:      8
  * Author:            10up
- * Author URI:        https://10up.com
- * License:           GPLv2 or later
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       convert-to-blocks
  *
  * @package           convert-to-blocks
