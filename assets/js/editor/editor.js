@@ -1,4 +1,3 @@
-import ClassicBlockTransformer from './transform/ClassicBlockTransformer';
 import MigrationClient from './transform/MigrationClient';
 
 let loaded = false;
@@ -33,7 +32,6 @@ class ConvertToBlocksEditorSupport {
 	 */
 	didBlockEditorLoad() {
 		const { registerPlugin } = window.wp.plugins;
-		const transformer = new ClassicBlockTransformer();
 
 		if (!registerPlugin) {
 			return;
@@ -49,8 +47,8 @@ class ConvertToBlocksEditorSupport {
 				loaded = true;
 
 				// This delay allows Gutenberg to initialize legacy content into freeform blocks
+				// Had to increase the delay to allow each page to load and save correctly
 				setTimeout(() => {
-					const result = transformer.execute();
 					const config = window.convert_to_blocks_agent || false;
 
 					// if no migration config, then ignore this request
@@ -60,17 +58,10 @@ class ConvertToBlocksEditorSupport {
 
 					const client = new MigrationClient(config);
 
-					// if no blocks transformed, then we can jump to the next post
-					if (!result) {
-						client.next();
-						return null;
-					}
-
 					client.save();
 
 					return null;
-				}, 500);
-
+				}, 5000);
 				return null;
 			},
 		});
