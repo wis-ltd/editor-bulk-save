@@ -126,7 +126,7 @@ class Plugin {
 	 * Initializes the Plugin WP CLI commands
 	 */
 	public function init_commands() {
-		\WP_CLI::add_command( 'convert-to-blocks', '\ConvertToBlocks\MigrationCommand' );
+		\WP_CLI::add_command( 'editor-bulk-save', '\ConvertToBlocks\MigrationCommand' );
 	}
 
 	/* Helpers */
