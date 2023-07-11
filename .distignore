@@ -4,7 +4,7 @@
 /.wordpress-org
 /assets
 /bin
-/config
+/config/
 /node_modules
 /tests
 
