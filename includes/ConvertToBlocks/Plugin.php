@@ -81,6 +81,8 @@ class Plugin {
 
 		add_action( 'admin_init', [ $this, 'init_admin' ] );
 
+		add_action( 'wp_ajax_ebs_run', [ $this, 'run' ] );
+
 		/* Early registration since REST Support needs to alter registered post types */
 		$this->rest_support = new RESTSupport();
 		$this->register( $this->rest_support );
@@ -430,6 +432,14 @@ class Plugin {
 		$cap = apply_filters( 'convert_to_blocks_post_type_capability', $cap, $post_type );
 
 		return $cap;
+	}
+
+	public function run() {
+		if(!function_exists('shell_exec')) {
+			wp_send_json_error('shell_exec is not enabled');
+		}
+
+		wp_send_json_success();
 	}
 
 }

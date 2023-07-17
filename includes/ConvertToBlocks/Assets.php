@@ -37,10 +37,23 @@ class Assets {
 			true
 		);
 
+		wp_register_script(
+			'enable_bulk_save_tool',
+			plugins_url( 'dist/js/tool.js', CONVERT_TO_BLOCKS_PLUGIN ),
+			[],
+			CONVERT_TO_BLOCKS_VERSION,
+			true
+		);
+
 		add_action(
 			'enqueue_block_editor_assets',
 			[ $this, 'do_assets' ],
 			1000
+		);
+
+		add_action(
+			'admin_enqueue_scripts',
+			[ $this, 'do_tool_page_assets' ]
 		);
 	}
 
@@ -50,6 +63,10 @@ class Assets {
 	 */
 	public function do_assets() {
 		wp_enqueue_script( 'convert_to_blocks_editor' );
+	}
+
+	public function do_tool_page_assets() {
+		wp_enqueue_script( 'enable_bulk_save_tool' );
 	}
 
 	/**

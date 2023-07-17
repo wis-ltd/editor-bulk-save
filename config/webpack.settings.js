@@ -3,6 +3,7 @@ module.exports = {
 	entries: {
 		// JS files.
 		'editor': './assets/js/editor/editor.js',
+		'tool': './assets/js/tool.js',
 	},
 	filename: {
 		js: 'js/[name].js',

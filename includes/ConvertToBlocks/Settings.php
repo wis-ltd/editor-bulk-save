@@ -55,8 +55,6 @@ class Settings {
 		$this->init();
 
 		add_action( 'admin_menu', [ $this, 'add_menu' ] );
-		add_action( 'admin_init', [ $this, 'register_section' ], 10 );
-		add_action( 'admin_init', [ $this, 'register_fields' ], 20 );
 		add_action( 'admin_notices', [ $this, 'filter_notice' ], 10 );
 	}
 
@@ -105,9 +103,10 @@ class Settings {
 	 * @return void
 	 */
 	public function add_menu() {
-		add_options_page(
-			esc_html__( 'Convert to Blocks', 'convert-to-blocks' ),
-			esc_html__( 'Convert to Blocks', 'convert-to-blocks' ),
+		add_submenu_page(
+			'tools.php',
+			esc_html__( 'Editor bulk save', 'convert-to-blocks' ),
+			esc_html__( 'Editor bulk save', 'convert-to-blocks' ),
 			$this->capability,
 			CONVERT_TO_BLOCKS_SLUG,
 			[ $this, 'settings_page' ]
@@ -123,108 +122,17 @@ class Settings {
 		?>
 		<div class="wrap">
 			<h1>
-				<?php esc_html_e( 'Convert to Blocks', 'convert-to-blocks' ); ?>
+				<?php esc_html_e( 'Editor bulk save', 'convert-to-blocks' ); ?>
 			</h1>
 			<hr>
 
-			<p>
-				<?php esc_html_e( 'Configure plugin by selecting the supported post types.', 'convert-to-blocks' ); ?>
-			</p>
-
-			<form method="post" action="options.php">
+			<form method="post" action="options.php" class="js--start-bulk-update">
 				<?php
-				settings_fields( $this->settings_group );
-				do_settings_sections( CONVERT_TO_BLOCKS_SLUG );
-				submit_button();
+				submit_button('Bulk save');
 				?>
 			</form>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Registers section for the settings page.
-	 *
-	 * @return void
-	 */
-	public function register_section() {
-		add_settings_section(
-			$this->settings_section,
-			false,
-			false,
-			CONVERT_TO_BLOCKS_SLUG
-		);
-	}
-
-	/**
-	 * Registers setting fields.
-	 *
-	 * @return void
-	 */
-	public function register_fields() {
-		// Supported post types.
-		add_settings_field(
-			sprintf( '%s_post_types', CONVERT_TO_BLOCKS_SLUG ),
-			esc_html__( 'Supported Post Types', 'convert-to-blocks' ),
-			[ $this, 'field_post_types' ],
-			CONVERT_TO_BLOCKS_SLUG,
-			$this->settings_section,
-			[
-				'label_for' => sprintf( '%s_post_types', CONVERT_TO_BLOCKS_SLUG ),
-			]
-		);
-
-		register_setting(
-			$this->settings_group,
-			sprintf( '%s_post_types', CONVERT_TO_BLOCKS_SLUG ),
-			[
-				'sanitize_callback' => [ $this, 'sanitize_post_types' ],
-			]
-		);
-	}
-
-	/**
-	 * Renders the `post_types` field.
-	 *
-	 * @return void
-	 */
-	public function field_post_types() {
-		$post_types  = get_option(
-			sprintf( '%s_post_types', CONVERT_TO_BLOCKS_SLUG ),
-			Plugin::get_instance()->get_default_post_types()
-		);
-		$output_html = '';
-
-		foreach ( $this->post_types as $post_type ) {
-			$output_html .= sprintf(
-				'<label for="%1$s"><input name="%2$s[]" type="checkbox" %3$s id="%1$s" value="%4$s"> %5$s</label> <br>',
-				sprintf( '%s_post_types_%s', esc_attr( CONVERT_TO_BLOCKS_SLUG ), esc_attr( $post_type ) ),
-				sprintf( '%s_post_types', esc_attr( CONVERT_TO_BLOCKS_SLUG ) ),
-				checked( in_array( $post_type, $post_types, true ), 1, false ),
-				esc_attr( $post_type ),
-				esc_attr( ucfirst( $post_type ) )
-			);
-		}
-		?>
-		<fieldset>
-			<?php echo $output_html; // phpcs:ignore ?>
-		</fieldset>
-		<?php
-	}
-
-	/**
-	 * Sanitizes post_types values.
-	 *
-	 * @param array $input Array containing checked values.
-	 *
-	 * @return array Sanitized array.
-	 */
-	public function sanitize_post_types( $input ) {
-		if ( ! is_array( $input ) ) {
-			return [];
-		}
-
-		return array_map( 'sanitize_text_field', $input );
 	}
 
 	/**
